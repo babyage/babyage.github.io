@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Pregnancy Length Calculator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="msapplication-tap-highlight" content="no" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<style type="text/css">
+			body
+			{
+				margin: 0px;
+			}
+
+			#anypicker-creds
+			{
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 10px;
+				z-index: 999999;
+			}
+
+			#container
+			{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				height: 600px;
+				width: 300px;
+				margin-top: -300px;
+				margin-left: -150px;
+				text-align: center;
+			}
+
+			#due-date-box
+			{
+				margin-bottom: 200px;
+			}
+
+			#due-date
+			{
+				display: block;
+				text-align: center;
+				font-size: 20px;
+				width: 300px;
+				margin: 0 auto;
+			}
+		</style>
+
+		<!-- import JQuery -->
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+
+		<!-- import AnyPicker date picker -->
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/anypicker@latest/dist/anypicker-all.min.css" />
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/anypicker@latest/dist/anypicker.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/anypicker@latest/dist/i18n/anypicker-i18n.js"></script> <!-- For i18n -->
+
+		<!-- import MomentJS -->
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@latest/moment.min.js"></script>
+
+		<!-- Scripts -->
+		<script type="text/javascript">
+			function calculateLength(date)
+			{
+				// Calculate pregnancy length and display
+				var startDate = moment(date).subtract(40, 'weeks');
+				var weeks = moment().diff(startDate, 'weeks');
+				var days = moment().diff(startDate, 'days') % 7;
+
+				$("#pregnancy-length").text(weeks + " WEEKS " + days + " DAYS");
+			}
+
+			$(document).ready(function()
+			{
+				$("#due-date").AnyPicker(
+				{
+					mode: "datetime",
+					layout: "inline",
+					dateTimeFormat: "MMM dd, yyyy",
+					theme: "Android", // "Default", "iOS", "Android", "Windows"
+					inputChangeEvent: "onChange",
+
+					// Remove buttons, keep open forever
+					closebutton: {
+					    markup: "",
+					    markupContentWindows: "",
+					    type: ""
+					},
+					setButton: {
+						markup: "",
+					    markupContentWindows: "",
+					    type: ""
+					},
+					cancelButton: {
+						markup: "",
+					    markupContentWindows: "",
+					    type: ""
+					},
+
+					onChange: function(iRow, iComp, oSelectedValues)
+					{
+						calculateLength(oSelectedValues.date);
+					},
+
+					onShowPicker: function()
+					{
+						$(".ap-layout-fixed").css('background', 'rgba(0,0,0,0)') // No dim
+					},
+
+					onInit: function()
+					{
+						calculateLength(moment().toDate());
+						this.showOrHidePicker(this.value);
+						this._hidePicker = function() {}; // No hiding
+					},
+				});
+
+			});
+		</script>
+	</head>
+
+	<body>
+		<p id="anypicker-creds">Powered by <a href="https://nehakadam.github.io/AnyPicker/">AnyPicker</a> and <a href="https://momentjs.com/">Moment.js</a></p>
+		<div id="container">
+			<div id="due-date-box">
+				<h3>Expected Due Date:</h3>
+				<input type="text" id="due-date" readonly>
+			</div>
+			<div id="pregnancy-length-box">
+				<h3>Pregnancy Length:</h3>
+				<h1 id="pregnancy-length"></h1>
+			</div>
+		</div>
+	</body>
+
+</html>
