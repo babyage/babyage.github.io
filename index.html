@@ -65,12 +65,30 @@
 		<script type="text/javascript">
 			function calculateLength(date)
 			{
-				// Calculate pregnancy length and display
+				// Calculate expected start date
 				var startDate = moment(date).subtract(40, 'weeks');
-				var weeks = moment().diff(startDate, 'weeks');
-				var days = moment().diff(startDate, 'days') % 7;
 
-				$("#pregnancy-length").text(weeks + " WEEKS " + days + " DAYS");
+				if (startDate.isAfter(moment())) {
+					// Expected start date is in the future, invalid
+					$("#pregnancy-length").text("Invalid Date");
+					$("#pregnancy-status").text("");
+				} else {
+					// Calculate length and display
+					var weeks = moment().diff(startDate, 'weeks');
+					var days = moment().diff(startDate, 'days') % 7;
+					$("#pregnancy-length").text(weeks + " WEEKS " + days + " DAYS");
+
+					// Check for overdue
+					if (weeks <= 40) {
+						$("#pregnancy-status").text("");
+					} else if (weeks <= 45) {
+						$("#pregnancy-status").text("Mother is overdue.");
+					} else if (weeks <= 53) {
+						$("#pregnancy-status").text("Mother is significantly overdue. Check condition.");
+					} else {
+						$("#pregnancy-status").text("Somebody get Guinness World Records on the line!");
+					}
+				}
 			}
 
 			$(document).ready(function()
@@ -132,6 +150,7 @@
 			<div id="pregnancy-length-box">
 				<h2>Pregnancy Length:</h2>
 				<h1 id="pregnancy-length"></h1>
+				<h2 id="pregnancy-status"></h2>
 			</div>
 		</div>
 	</body>
